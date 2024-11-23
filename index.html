@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Selection Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group select,
+        .form-group input,
+        .form-group textarea,
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+        .form-group button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .row .form-group {
+            flex: 1;
+        }
+
+        /* পপআপ স্টাইল */
+        .popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+        }
+
+        .popup-container.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-top: 10px solid #6A1B9A;
+            transform: translateY(-50px);
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .animate-popup {
+            transform: translateY(0);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            color: #ffffff;
+            background-color: #6A1B9A;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 22px;
+        }
+
+        .popup-text {
+            margin-bottom: 20px;
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Service Selection</h2>
+        <div class="row">
+            <div class="form-group">
+                <label for="service">Select a Service:</label>
+                <select id="service">
+                    <option value="">-- Choose a Service --</option>
+                    <option value="gmail">Gmail</option>
+                    <option value="facebook">Facebook</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="mailBox">Mail Box:</label>
+                <select id="mailBox">
+                    <option value="">-- Select Mail Box --</option>
+                    <option value="email.com">email.com</option>
+                    <option value="email.org">email.org</option>
+                    <option value="email.net">email.net</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="telegramUsername">Telegram Username:</label>
+            <input type="text" id="telegramUsername" placeholder="@username">
+        </div>
+        <div class="form-group">
+            <label for="userChatId">User Chat ID:</label>
+            <input type="number" id="userChatId" placeholder="Enter 9-12 digit number">
+        </div>
+        <div class="form-group">
+            <label for="googleSheetLink">Google Sheet Link:</label>
+            <input type="url" id="googleSheetLink" placeholder="https://docs.google.com/">
+        </div>
+        <div class="form-group">
+            <button id="submitButton" onclick="validateAndSubmit()">Submit</button>
+        </div>
+    </div>
+
+    <!-- পপআপ -->
+    <div id="popup" class="popup-container">
+        <div class="popup-content animate-popup">
+            <button class="close-btn" onclick="closePopup()">×</button>
+            <div class="popup-text" id="popupMessage"></div>
+        </div>
+    </div>
+
+    <script>
+
+        function showPopup(message) {
+    const popup = document.getElementById('popup');
+    const popupMessage = document.getElementById('popupMessage');
+    popupMessage.textContent = message;
+    popup.classList.add('show');
+}
+
+function closePopup() {
+    const popup = document.getElementById('popup');
+    popup.classList.remove('show');
+}
+
+function validateAndSubmit() {
+    const service = document.getElementById('service').value.trim();
+    const mailBox = document.getElementById('mailBox').value.trim();
+    const telegramUsername = document.getElementById('telegramUsername').value.trim();
+    const userChatId = document.getElementById('userChatId').value.trim();
+    const googleSheetLink = document.getElementById('googleSheetLink').value.trim();
+    const submitButton = document.getElementById('submitButton');
+
+    if (!service) {
+        showPopup("Please select a service!");
+        return;
+    }
+    if (!mailBox) {
+        showPopup("  select a mail box!");
+        return;
+    }
+    if (!telegramUsername) {
+        showPopup(" আপনার সঠিক টেলিগ্রাম ইউজারনেম লেখুন!  ");
+        return;
+    }
+    if (!userChatId || userChatId.length < 9 || userChatId.length > 12 || isNaN(userChatId)) {
+        showPopup(" অনুগ্রহ করে আপনার সঠিক ইউজার কোডটি দিন ");
+        return;
+    }
+    if (!googleSheetLink || !googleSheetLink.startsWith("https://docs.google.com/")) {
+        showPopup("Please enter a valid Google Sheet link!");
+        return;
+    }
+
+    // সফল মেসেজ দেখানো এবং সাবমিট বাটন নিষ্ক্রিয় করা
+    submitButton.disabled = true;
+    showPopup("Congratulations! আপনার কাজ গুলো সফলভাবে জমা করা হয়েছে।  ");
+
+    // টেলিগ্রাম বটে তথ্য পাঠানো
+    sendToTelegram({
+        service,
+        mailBox,
+        telegramUsername,
+        userChatId,
+        googleSheetLink,
+    });
+}
+
+// টেলিগ্রাম বটে তথ্য পাঠানোর ফাংশন
+function sendToTelegram(data) {
+    const TELEGRAM_BOT_TOKEN = "7734169736:AAGDFW2mVkNSLrrPClDohEfNE0whlwmBiuE"; // এখানে আপনার টেলিগ্রাম বট টোকেন দিন
+    const CHAT_ID = "7708954371"; // এখানে আপনার চ্যাট আইডি দিন
+
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const message = `
+New work Submission:
+Account type: ${data.service}
+Mail type: ${data.mailBox}
+Tg Username: ${data.telegramUsername}
+Tg UserID: ${data.userChatId}
+Google Sheet Link: ${data.googleSheetLink}
+`;
+
+    fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: message,
+        }),
+    })
+        .then((response) => {
+            if (response.ok) {
+                console.log("Data sent to Telegram successfully.");
+            } else {
+                console.error("Failed to send data to Telegram.");
+            }
+        })
+        .catch((error) => console.error("Error sending data to Telegram:", error));
+}
+    </script>
+</body>
+</html>
